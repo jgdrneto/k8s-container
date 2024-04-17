@@ -36,6 +36,6 @@ The Grafana username/password is admin/admin.
 
 ## Mapped ports
 
-The K8S Dashboard: ([https://localhost:32000](https://localhost:32000))
-The Prometheus Dashboard: ([http://localhost:32001](http://localhost:32001))
-The Grafana Dashboard: ([http://localhost:32002](http://localhost:32002))
+ - The K8S Dashboard: ([https://localhost:32000](https://localhost:32000))
+ - The Prometheus Dashboard: ([http://localhost:32001](http://localhost:32001))
+ - The Grafana Dashboard: ([http://localhost:32002](http://localhost:32002))
