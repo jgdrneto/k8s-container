@@ -1,0 +1,51 @@
+
+services:
+  k8s:
+    image: "rancher/k3s:${K8S_VERSION}"
+    container_name: k8s
+    hostname: k8s
+    command: server --kube-apiserver-arg='token-auth-file=/data/token.csv'
+    tmpfs:
+    - /run
+    - /var/run
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    privileged: true
+    restart: always
+    networks:
+      k8s-net:
+        ipv4_address: ${K8S_HOST}
+    environment:
+    - K3S_TOKEN=${K8S_TOKEN}
+    - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+    - K3S_KUBECONFIG_MODE=644
+    - K8S_DASHBOARD_VERSION=${K8S_DASHBOARD_VERSION}
+    - K8S_DASHBOARD_PORT=${K8S_DASHBOARD_APP_PORT}
+    - PROMETHEUS_PORT=${PROMETHEUS_APP_PORT}
+    - GRAFANA_PORT=${GRAFANA_APP_PORT}
+    volumes:
+    - k8s-data:${K8S_DATA}
+    - ./data:/data
+    - .:/output
+    ports:
+    - 6443:16443    # Kubernetes API Server
+    - ${K8S_DASHBOARD_APP_PORT}:${K8S_DASHBOARD_HOST_PORT}
+    - ${PROMETHEUS_APP_PORT}:${PROMETHEUS_HOST_PORT}
+    - ${GRAFANA_APP_PORT}:${GRAFANA_HOST_PORT}
+    - 80:8080       # Ingress controller port 80
+    - 443:4443      # Ingress controller port 443
+volumes:
+  k8s-data:
+    name: k8s-data
+
+networks:
+  k8s-net:
+    name: k8s-net
+    driver: bridge
+    ipam:
+     config:
+       - subnet: ${SUBNET}
+         gateway: ${GATEWAY}
